@@ -6,8 +6,8 @@ import os
 import streamlit as st
 
 # for function
-from function import (connect_openai_llm, generate_answer, display_hits_dataframe)
-from prompt import generate_prompt, response_format_json
+from function import (connect_openai_llm, generate_answer, display_dataframe)
+from prompt import generate_prompt
 
 
 #---------- settings ----------- #
@@ -42,16 +42,15 @@ with st.sidebar:
 
 #===========================================================================================
 
-
+customer_name = st.text_input("customer's name")
 if customer_email := st.text_area(
-    "Input customer's email:", height=300
+    "Input customer's email content:", height=300
 ): 
     print('processing...')
     logging.info(customer_email)
     prompt = generate_prompt(customer_email)
     logging.info(prompt)
-    response = generate_answer(model_llm,prompt)
-    logging.info(response)
-    response_json = response_format_json(response)
-    st.text_area(label="Model Response", value=response_json, height=300)
-    # display_hits_dataframe(hits)
+    response_list = generate_answer(model_llm,prompt)
+    logging.info(response_list)
+    # st.text_area(label="Model Response", value=response_list, height=300)
+    display_dataframe(customer_name, response_list)

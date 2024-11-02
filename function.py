@@ -6,6 +6,7 @@ import streamlit as st
 from dotenv import load_dotenv
 from openai import OpenAI
 
+from prompt import response_format_json, response_format_df
 
 # now = datetime.datetime.now()
 # formatted_datetime = now.strftime("%d-%m-%Y_%H%M")
@@ -27,20 +28,16 @@ def generate_answer(openai_client, prompt):
         model="gpt-4o",
         messages= prompt
     )
-    return completion.choices[0].message.content
+    response = completion.choices[0].message.content
+    return response_format_df(response)
 
 
-def create_hits_dataframe(hits, num_hits=10):
-    if len(hits[0]) < 10:
-        num_hits = len(hits[0])
-    dict_display = {
-        f'chunk{i}': [hits[0][i].text]
-        for i in range(num_hits)
-    }
-    df = pd.DataFrame(dict_display).T
-    df.columns = ['Reference from document']
+def create_dataframe(col_name,response_list):
+    col = ["Yacht Model", "Yacht Length", "Year of Manufacture", "Current Value/Purchase Price", "Current Location", "Intended Cruising Area", "Owner's Name", "Owner's Contact Information", "Owner's Boating Experience", "Previous Insurance Claims", "Additional Equipment", "Current Insurance Coverage", "Other"]
+    df = pd.DataFrame(index=col)
+    df[col_name]=response_list
     return df
 
-def display_hits_dataframe(hits, num_hits=10, width=1000):
-    df_dis = create_hits_dataframe(hits, num_hits)
-    st.dataframe(df_dis, width=width)
+def display_dataframe(col_name,response_list):
+    df_dis = create_dataframe(col_name,response_list)
+    st.dataframe(df_dis, width=1000)
