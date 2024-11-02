@@ -32,7 +32,7 @@ def generate_answer(openai_client, prompt):
     return response_format_df(response)
 
 
-def create_dataframe(col_name,response_list):
+def create_dataframe(df,col_name, response_list):
     col = ["Yacht Model", "Yacht Length", "Year of Manufacture", "Current Value/Purchase Price", "Current Location", "Intended Cruising Area", "Owner's Name", "Owner's Contact Information", "Owner's Boating Experience", "Previous Insurance Claims", "Additional Equipment", "Current Insurance Coverage", "Other"]
     df = pd.DataFrame(index=col)
     df[col_name]=response_list
