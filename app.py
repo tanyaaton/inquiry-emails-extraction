@@ -7,7 +7,7 @@ import streamlit as st
 import pandas as pd
 
 # for function
-from function import (connect_openai_llm, generate_answer, display_dataframe)
+from function import (connect_openai_llm, generate_answer)
 from prompt import generate_prompt
 
 
@@ -58,7 +58,7 @@ with st.sidebar:
     st.markdown("### Display Options")
     for customer_name in st.session_state.customer_data.keys():
         st.session_state.customer_visibility[customer_name] = st.checkbox(
-            f"Show {customer_name}", value=True
+            f"{customer_name}", value=True
         )
 
 
@@ -79,10 +79,10 @@ if customer_name := st.text_input("customer's name"):
         df_current[customer_name] = response_list
         st.session_state.customer_visibility[customer_name] = True  # Show newly added data
         st.session_state.customer_data_df = df_current
-        st.dataframe(df_current, width=1000)
+        # st.dataframe(df_current, width=1000)
 
-    # Display data for visible customers
-# for name, data in st.session_state.customer_data.items():
-#     if st.session_state.customer_visibility.get(name, False):
-#         st.subheader(f"Data for {name}")
-#         display_dataframe(name, data)
+# Display data for visible customers
+if st.session_state.customer_visibility != {}:
+    name_visible = [key for key, value in st.session_state.customer_visibility.items() if value]
+    df_display =st.session_state.customer_data_df 
+    st.dataframe(df_display[name_visible], width=1000)

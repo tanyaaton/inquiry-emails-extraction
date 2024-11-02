@@ -29,15 +29,12 @@ def generate_answer(openai_client, prompt):
         messages= prompt
     )
     response = completion.choices[0].message.content
+    logging.info(response)
     return response_format_df(response)
 
 
 def create_dataframe(df,col_name, response_list):
-    col = ["Yacht Model", "Yacht Length", "Year of Manufacture", "Current Value/Purchase Price", "Current Location", "Intended Cruising Area", "Owner's Name", "Owner's Contact Information", "Owner's Boating Experience", "Previous Insurance Claims", "Additional Equipment", "Current Insurance Coverage", "Other"]
-    df = pd.DataFrame(index=col)
+    entities = ["Yacht Model", "Yacht Length", "Year of Manufacture", "Current Value/Purchase Price", "Current Location", "Intended Cruising Area", "Owner's Name", "Owner's Contact Information", "Owner's Boating Experience", "Previous Insurance Claims", "Additional Equipment", "Current Insurance Coverage", "Other"]
+    df = pd.DataFrame(index=entities)
     df[col_name]=response_list
     return df
-
-def display_dataframe(col_name,response_list):
-    df_dis = create_dataframe(col_name,response_list)
-    st.dataframe(df_dis, width=1000)
