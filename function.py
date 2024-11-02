@@ -8,12 +8,6 @@ from openai import OpenAI
 
 from prompt import response_format_json, response_format_df
 
-# now = datetime.datetime.now()
-# formatted_datetime = now.strftime("%d-%m-%Y_%H%M")
-# logging.basicConfig(filename=f'log/app_{formatted_datetime}.log', 
-#                     level=logging.INFO, 
-#                     format='%(asctime)s - %(levelname)s - %(message)s')
-
 load_dotenv()
 OPENAI_API_KEY=  os.getenv("OPENAI_API_KEY")
 
@@ -21,6 +15,10 @@ OPENAI_API_KEY=  os.getenv("OPENAI_API_KEY")
 def connect_openai_llm():
     client = OpenAI()
     return client
+
+@st.cache_data
+def convert_df(df):
+    return df.to_csv(index=False).encode('utf-8')
 
 
 def generate_answer(openai_client, prompt):

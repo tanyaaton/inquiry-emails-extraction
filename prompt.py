@@ -3,7 +3,6 @@ import ast
 
 entities = ["Yacht Model", "Yacht Length", "Year of Manufacture", "Current Value/Purchase Price", "Current Location", "Intended Cruising Area", "Owner's Name", "Owner's Contact Information", "Owner's Boating Experience", "Previous Insurance Claims", "Additional Equipment", "Current Insurance Coverage", "Other"]
 
-
 # instruction_json = """You are a helpful, respectful assistant. You will receive an INSURANCE REQUEST EMAIL in the speficied subject and its content. From the email, please extract the following entity in to jason format provided below
 # [{"Yacht Model": ""},{"Yacht Length": ""},{"Year of Manufacture":""}{"Current Value/Purchase Price":""},{"Current Location":""},{"Intended Cruising Area":""},{"Owner's Name":""},{"Owner's Contact Information":""},{"Owner's Boating Experience":""},{"Previous Insurance Claims":""},{"Additional Equipment":""},{"Current Insurance Coverage":""},{"Other":""}]"""
 

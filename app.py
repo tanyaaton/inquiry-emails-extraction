@@ -2,18 +2,16 @@ import logging
 import datetime
 import os
 
-#for UI
 import streamlit as st
 import pandas as pd
 
-# for function
-from function import (connect_openai_llm, generate_answer)
+# function
+from function import (connect_openai_llm, generate_answer, convert_df)
 from prompt import generate_prompt
 
 
-#---------- settings ----------- #
+# settings
 model_id_llm='gpt-4o'
-model_id_emb="text-embedding-3-large"
 
 # Most GENAI logs are at Debug level.
 now = datetime.datetime.now()
@@ -61,9 +59,6 @@ with st.sidebar:
             f"{customer_name}", value=True
         )
 
-
-#===========================================================================================
-
 if customer_name := st.text_input("customer's name"):
     if customer_email := st.text_area("Input customer's email content:", height=300): 
         print('processing...')
@@ -79,10 +74,16 @@ if customer_name := st.text_input("customer's name"):
         df_current[customer_name] = response_list
         st.session_state.customer_visibility[customer_name] = True  # Show newly added data
         st.session_state.customer_data_df = df_current
-        # st.dataframe(df_current, width=1000)
 
 # Display data for visible customers
 if st.session_state.customer_visibility != {}:
     name_visible = [key for key, value in st.session_state.customer_visibility.items() if value]
     df_display =st.session_state.customer_data_df 
     st.dataframe(df_display[name_visible], width=1000)
+
+    csv = convert_df(df_display)
+    st.download_button("Press to Download",csv,
+    f"result_{formatted_datetime}.csv",
+    "text/csv",
+    key='download-csv'
+    )
