@@ -5,16 +5,25 @@ import pandas as pd
 import streamlit as st
 from dotenv import load_dotenv
 from openai import OpenAI
+from tavily import TavilyClient
 
-from prompt import response_format_json, response_format_df
+
+# from prompt import response_format_df
 
 load_dotenv()
 OPENAI_API_KEY=  os.getenv("OPENAI_API_KEY")
+tavily_api_key = os.getenv("TAVILY_API_KEY")
 
 @st.cache_resource
 def connect_openai_llm():
     client = OpenAI()
     return client
+
+@st.cache_resource
+def connect_tavily():
+    tavily_client = TavilyClient(api_key=tavily_api_key)
+    return tavily_client
+
 
 @st.cache_data
 def convert_df(df):
@@ -28,7 +37,7 @@ def generate_answer(openai_client, prompt):
     )
     response = completion.choices[0].message.content
     logging.info(response)
-    return response_format_df(response)
+    return response
 
 
 def create_dataframe(df,col_name, response_list):
@@ -36,3 +45,5 @@ def create_dataframe(df,col_name, response_list):
     df = pd.DataFrame(index=entities)
     df[col_name]=response_list
     return df
+
+

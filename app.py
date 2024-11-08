@@ -1,13 +1,14 @@
 import logging
 import datetime
 import os
+import json
 
 import streamlit as st
 import pandas as pd
 
 # function
-from function import (connect_openai_llm, generate_answer, convert_df)
-from prompt import generate_prompt
+from function import connect_openai_llm, connect_tavily, generate_answer, convert_df
+from prompt import generate_prompt, search_web, generate_search_prompt, response_format_df
 
 
 # settings
@@ -29,6 +30,7 @@ st.set_page_config(
 st.header("Insurance Inquiry Emails Extraction 📮")
 
 model_llm = connect_openai_llm()
+tavily_client = connect_tavily()
 
 
 # Initialize session state for customer data and visibility
@@ -65,8 +67,17 @@ if customer_name := st.text_input("customer's name"):
         logging.info(customer_email)
         prompt = generate_prompt(customer_email)
         logging.info(prompt)
-        response_list = generate_answer(model_llm,prompt)
+        email_dic = generate_answer(model_llm,prompt)
+        print('ppppppppp',email_dic)
+        logging.info(email_dic)
+        
+        link = search_web(email_dic, tavily_client)
+        prompt_fill_na = generate_search_prompt(email_dic,link)
+        logging.info(prompt_fill_na)
+        response_list = generate_answer(model_llm,prompt_fill_na)
         logging.info(response_list)
+        if isinstance(response_list, list): pass
+        else: response_list = response_format_df(response_list)
 
         # Store customer data in session state
         st.session_state.customer_data[customer_name] = response_list

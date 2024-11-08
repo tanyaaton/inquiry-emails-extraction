@@ -16,12 +16,14 @@ from function import connect_openai_llm
 client = connect_openai_llm()
 tavily_client = TavilyClient(api_key=os.environ["TAVILY_API_KEY"])
 
-assistant_prompt_instruction = """You are a finance expert. 
-Your goal is to provide answers based on information from the internet. 
-You must use the provided Tavily search API function to find relevant online information. 
-You should never use your own knowledge to answer questions.
-Please include relevant url sources in the end of your answers.
-"""
+# assistant_prompt_instruction = """You are a finance expert. 
+# Your goal is to provide answers based on information from the internet. 
+# You must use the provided Tavily search API function to find relevant online information. 
+# You should never use your own knowledge to answer questions.
+# Please include relevant url sources in the end of your answers.
+# """
+
+assistant_prompt_instruction ="""You are """
 
 # Function to perform a Tavily search
 def tavily_search(query):
