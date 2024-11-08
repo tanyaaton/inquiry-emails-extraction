@@ -55,7 +55,10 @@ with st.sidebar:
     ''')
 
     # Toggle visibility for each customer
-    st.markdown("### Display Options")
+    st.markdown('''
+        ### Display Options
+        - choose customer name to display the data''')
+
     for customer_name in st.session_state.customer_data.keys():
         st.session_state.customer_visibility[customer_name] = st.checkbox(
             f"{customer_name}", value=True

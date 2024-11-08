@@ -3,13 +3,13 @@ import ast
 
 entities = ["Yacht Model", "Yacht Length", "Year of Manufacture", "Current Value/Purchase Price", "Current Location", "Intended Cruising Area", "Owner's Name", "Owner's Contact Information", "Owner's Boating Experience", "Previous Insurance Claims", "Additional Equipment", "Current Insurance Coverage", "Other"]
 
-# instruction_json = """You are a helpful, respectful assistant. You will receive an INSURANCE REQUEST EMAIL in the speficied subject and its content. From the email, please extract the following entity in to jason format provided below
-# [{"Yacht Model": ""},{"Yacht Length": ""},{"Year of Manufacture":""}{"Current Value/Purchase Price":""},{"Current Location":""},{"Intended Cruising Area":""},{"Owner's Name":""},{"Owner's Contact Information":""},{"Owner's Boating Experience":""},{"Previous Insurance Claims":""},{"Additional Equipment":""},{"Current Insurance Coverage":""},{"Other":""}]"""
-
 instruction_dataframe = f"""You are a helpful, respectful assistant. You will receive an INSURANCE REQUEST EMAIL in the specified subject and its content. From the email, please extract the following entities into a list with the order specified below:
 ["Yacht Model", "Yacht Length", "Year of Manufacture", "Current Value/Purchase Price", "Current Location", "Intended Cruising Area", "Owner's Name", "Owner's Contact Information", "Owner's Boating Experience", "Previous Insurance Claims", "Additional Equipment", "Current Insurance Coverage", "Other"]
 If the information is not provide for the specific entities, that element of the list should be None. Return only in the string of list format that can be directly transfer into python list.
 """
+
+# instruction_json = """You are a helpful, respectful assistant. You will receive an INSURANCE REQUEST EMAIL in the speficied subject and its content. From the email, please extract the following entity in to jason format provided below
+# [{"Yacht Model": ""},{"Yacht Length": ""},{"Year of Manufacture":""}{"Current Value/Purchase Price":""},{"Current Location":""},{"Intended Cruising Area":""},{"Owner's Name":""},{"Owner's Contact Information":""},{"Owner's Boating Experience":""},{"Previous Insurance Claims":""},{"Additional Equipment":""},{"Current Insurance Coverage":""},{"Other":""}]"""
 
 # instruction_dic = """You are a helpful, respectful assistant. You will receive an INSURANCE REQUEST EMAIL in the speficied subject and its content. From the email, please extract the following entity in to python dictionary format provided below
 # {"Yacht Model": "","Yacht Length": "","Year of Manufacture": "","Current Value/Purchase Price": "","Current Location": "","Intended Cruising Area": "","Owner's Name": "","Owner's Contact Information": "","Owner's Boating Experience": "","Previous Insurance Claims": ","Additional Equipment": "","Current Insurance Coverage": "","Other": ""}
@@ -35,6 +35,10 @@ def generate_prompt(email):
     }
     return messages["messages"]
 
+def response_format_df(response):
+    response_list = ast.literal_eval(response)
+    return response_list
+
 # def response_format_json(response):
 #     response_json = response.replace('\n', '').replace('json', '').replace('```', '').replace('', '')
 #     data = json.loads(response_json)
@@ -45,17 +49,12 @@ def generate_prompt(email):
 #     data = json.loads(response_json)
 #     return data
 
-def response_format_df(response):
-    response_list = ast.literal_eval(response)
-    return response_list
 
 def search_web(email_dic, tavily_client):
     yatch_model = email_dic[0]
     message = f'Search for {entities[:3]} of the {yatch_model}'
     response = tavily_client.search(message)
     return [response['results'][0]['url'], response['results'][1]['url'], response['results'][2]['url']]
-
-
 
 # instruction_search_dic = """given you a list of 3 internet link resources that contain the missing information for the given Yatch Model PYTHON DICTIONARY.
 # Please search through the links to find the information for the missing value (None) in the given PYTHON DICTIONARY. If all the informtion is found in the first link, there is no need to look in to the second or third link. If not, continue the search on the second link, and so on. 
