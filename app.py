@@ -52,12 +52,13 @@ with st.sidebar:
     st.markdown('''
     ### Model Information
     - LLM Model: `gpt-4o`
+    - Websearch Model: `Tavily`
     ''')
 
     # Toggle visibility for each customer
     st.markdown('''
-        ### Display Options
-        - choose customer name to display the data''')
+        ### Display Options\n
+        choose customer name to display the data''')
 
     for customer_name in st.session_state.customer_data.keys():
         st.session_state.customer_visibility[customer_name] = st.checkbox(
@@ -71,7 +72,6 @@ if customer_name := st.text_input("customer's name"):
         prompt = generate_prompt(customer_email)
         logging.info(prompt)
         email_dic = generate_answer(model_llm,prompt)
-        print('ppppppppp',email_dic)
         logging.info(email_dic)
         
         link = search_web(email_dic, tavily_client)
@@ -95,7 +95,7 @@ if st.session_state.customer_visibility != {}:
     df_display =st.session_state.customer_data_df 
     st.dataframe(df_display[name_visible], width=1000)
 
-    csv = convert_df(df_display)
+    csv = convert_df(df_display[name_visible])
     st.download_button("Press to Download",csv,
     f"result_{formatted_datetime}.csv",
     "text/csv",
